@@ -1037,6 +1037,7 @@ function PartnerView({
   onToggleVisibility: (key: keyof typeof visibility) => void;
 }) {
   const [partnerCode, setPartnerCode] = useState("");
+  const [copied, setCopied] = useState(false);
   const [joinCode, setJoinCode] = useState("");
   const [status, setStatus] = useState("");
 
@@ -1106,11 +1107,29 @@ function PartnerView({
               </button>
               {partnerCode && (
                 <button
-                  className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-rose/20 bg-white px-4 font-semibold"
-                  onClick={() => navigator.clipboard.writeText(partnerCode)}
+                  className={clsx(
+                    "mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border px-4 font-semibold transition",
+                    copied
+                      ? "border-luteal bg-luteal/20 text-[#8d75b6]"
+                      : "border-rose/20 bg-white",
+                  )}
+                  onClick={() => {
+                    navigator.clipboard.writeText(partnerCode);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
                 >
-                  <Copy size={17} aria-hidden="true" />
-                  {partnerCode}
+                  {copied ? (
+                    <>
+                      <Check size={17} aria-hidden="true" />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={17} aria-hidden="true" />
+                      {partnerCode}
+                    </>
+                  )}
                 </button>
               )}
             </div>
